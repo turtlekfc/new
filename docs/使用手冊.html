@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>社團帳本 使用手冊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cover:#26392f;
+    --cover-soft:#3a5245;
+    --cream:#faf6ee;
+    --paper:#fffdf8;
+    --ink:#2b2b28;
+    --ink-soft:#6b6b63;
+    --line:#e7e0d0;
+    --gold:#b8893f;
+    --rose:#b2464a;
+    --ok:#3f6b52;
+    --radius:14px;
+    --shadow: 0 10px 30px -12px rgba(38,57,47,0.25);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:'Noto Sans TC', system-ui, sans-serif;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{ font-family:'Noto Serif TC', serif; }
+  a{ color:var(--cover); }
+
+  /* ---------- Cover ---------- */
+  .cover{
+    background: linear-gradient(160deg, var(--cover), var(--cover-soft));
+    color:#f4efe3;
+    padding:64px 24px 72px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .cover::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.06) 0, transparent 40%),
+                       radial-gradient(circle at 85% 75%, rgba(255,255,255,0.05) 0, transparent 45%);
+  }
+  .cover .mark{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:76px; height:76px; border-radius:50%;
+    background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.35);
+    font-size:34px; margin-bottom:18px; position:relative; z-index:1;
+  }
+  .cover h1{ font-size:clamp(28px,5vw,40px); margin:0 0 10px; font-weight:900; position:relative; z-index:1;}
+  .cover p{ margin:0; opacity:.86; font-size:16px; position:relative; z-index:1;}
+  .cover .badge{
+    display:inline-block; margin-top:22px; padding:6px 16px; font-size:13px;
+    border:1px solid rgba(255,255,255,0.4); border-radius:999px; position:relative; z-index:1;
+  }
+
+  /* ---------- Layout ---------- */
+  .wrap{ max-width:880px; margin:0 auto; padding:0 20px 80px; }
+  .toc{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    margin-top:-36px; position:relative; z-index:2; box-shadow:var(--shadow);
+    padding:26px 28px;
+  }
+  .toc h2{ margin:0 0 14px; font-size:17px; color:var(--cover); }
+  .toc ol{ margin:0; padding-left:0; list-style:none; columns:2; column-gap:28px; }
+  .toc li{ break-inside:avoid; margin-bottom:9px; font-size:14.5px; }
+  .toc a{ text-decoration:none; color:var(--ink); }
+  .toc a:hover{ color:var(--gold); }
+  .toc .n{ color:var(--gold); font-weight:700; margin-right:6px; }
+
+  section{ margin-top:56px; scroll-margin-top:20px; }
+  section h2{
+    font-size:23px; color:var(--cover); margin:0 0 6px;
+    display:flex; align-items:center; gap:10px;
+  }
+  section h2 .num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:34px; height:34px; border-radius:50%; background:var(--cover);
+    color:#fff; font-size:15px; font-family:'Noto Serif TC',serif; flex:none;
+  }
+  section .lede{ color:var(--ink-soft); margin:0 0 20px; font-size:14.5px; }
+  h3{ font-size:16.5px; color:var(--ink); margin:26px 0 8px; }
+  p{ margin:0 0 12px; font-size:15px; }
+  ul, ol.steps{ margin:0 0 14px; padding-left:22px; font-size:15px; }
+  ul li, ol.steps li{ margin-bottom:6px; }
+  ol.steps{ list-style:none; padding-left:0; counter-reset:step; }
+  ol.steps li{
+    counter-increment:step; position:relative; padding-left:38px; margin-bottom:14px;
+  }
+  ol.steps li::before{
+    content:counter(step); position:absolute; left:0; top:-1px;
+    width:26px; height:26px; border-radius:50%; background:var(--cover-soft); color:#fff;
+    font-size:13px; display:flex; align-items:center; justify-content:center; font-weight:700;
+  }
+  code, .mono{
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    background:#f0ece0; border:1px solid var(--line); border-radius:5px;
+    padding:1px 6px; font-size:13px; color:#4a4336;
+  }
+
+  .card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px; margin:16px 0; box-shadow:var(--shadow);
+  }
+
+  .tip, .warn, .lock{
+    border-radius:12px; padding:14px 16px; margin:16px 0; font-size:14.5px;
+    border-left:4px solid; display:flex; gap:10px;
+  }
+  .tip{ background:#eef5ef; border-color:var(--ok); }
+  .warn{ background:#fbeeee; border-color:var(--rose); }
+  .lock{ background:#f3eee0; border-color:var(--gold); }
+  .tip .icon, .warn .icon, .lock .icon{ font-size:18px; line-height:1.4; }
+  .tip b, .warn b, .lock b{ display:block; margin-bottom:2px; }
+
+  table{ width:100%; border-collapse:collapse; margin:14px 0; font-size:14px; }
+  th, td{ text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th{ color:var(--ink-soft); font-weight:700; font-size:13px; }
+  tr:last-child td{ border-bottom:none; }
+
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .tile{
+    background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:16px 18px;
+  }
+  .tile .ic{ font-size:22px; }
+  .tile h4{ margin:8px 0 4px; font-size:15px; color:var(--cover); }
+  .tile p{ margin:0; font-size:13.5px; color:var(--ink-soft); }
+
+  /* ---------- Decorative mockups (schematic, not real screenshots) ---------- */
+  .mockup{
+    background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    box-shadow:var(--shadow); margin:18px 0;
+  }
+  .mockup .mock-label{
+    font-size:12px; color:var(--ink-soft); padding:6px 14px; background:#f3efe4;
+    border-bottom:1px dashed var(--line);
+  }
+  .mock-tabs{ display:flex; background:var(--cover); }
+  .mock-tabs span{
+    padding:10px 14px; color:#d9e0da; font-size:12.5px; border-right:1px solid rgba(255,255,255,0.08);
+  }
+  .mock-tabs span.active{ background:var(--cover-soft); color:#fff; font-weight:700; }
+  .mock-login{ padding:30px 20px; text-align:center; background:repeating-linear-gradient(135deg,#fbf8f1 0 2px,#fff 2px 20px); }
+  .mock-login .circle{
+    width:48px;height:48px;border-radius:50%;background:var(--cover);color:#fff;display:inline-flex;
+    align-items:center;justify-content:center;font-size:20px;margin-bottom:10px;
+  }
+  .mock-login .field{ height:34px; max-width:260px; margin:8px auto; background:#fff; border:1px solid var(--line); border-radius:8px; }
+  .mock-login .btn{
+    display:inline-block; margin-top:6px; background:var(--cover); color:#fff; font-size:13px;
+    padding:8px 22px; border-radius:8px;
+  }
+  .mock-rows{ padding:14px; }
+  .mock-row{
+    display:flex; justify-content:space-between; font-size:13px; padding:9px 10px; border-bottom:1px solid var(--line);
+  }
+  .mock-row:last-child{ border-bottom:none; }
+  .mock-row .amt-in{ color:var(--ok); font-weight:700; }
+  .mock-row .amt-out{ color:var(--rose); font-weight:700; }
+
+  footer{
+    text-align:center; color:var(--ink-soft); font-size:13px; padding:40px 20px 10px;
+  }
+  .top-link{
+    position:fixed; right:18px; bottom:18px; background:var(--cover); color:#fff; width:42px;height:42px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none;
+    box-shadow:var(--shadow); font-size:16px; opacity:.9;
+  }
+  @media (max-width:600px){
+    .toc ol{ columns:1; }
+    .cover{ padding:48px 18px 56px; }
+  }
+  @media print{
+    .top-link{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="mark">📘</div>
+  <h1 class="serif">社團帳本 使用手冊</h1>
+  <p>從安裝到日常記帳——給使用者看的操作指南</p>
+  <span class="badge">單機桌面版・資料存在自己電腦裡</span>
+</div>
+
+<div class="wrap">
+
+  <nav class="toc">
+    <h2 class="serif">目錄</h2>
+    <ol>
+      <li><span class="n">01</span><a href="#intro">這是什麼</a></li>
+      <li><span class="n">02</span><a href="#install">安裝與開啟程式</a></li>
+      <li><span class="n">03</span><a href="#first-run">第一次使用</a></li>
+      <li><span class="n">04</span><a href="#tour">介面導覽</a></li>
+      <li><span class="n">05</span><a href="#daily">日常操作</a></li>
+      <li><span class="n">06</span><a href="#accounts">帳號與權限</a></li>
+      <li><span class="n">07</span><a href="#backup">備份與還原</a></li>
+      <li><span class="n">08</span><a href="#multi">多帳本管理</a></li>
+      <li><span class="n">09</span><a href="#migrate">換電腦 / 交接給下一位</a></li>
+      <li><span class="n">10</span><a href="#faq">常見問題 Q&amp;A</a></li>
+      <li><span class="n">11</span><a href="#notes">注意事項</a></li>
+    </ol>
+  </nav>
+
+  <!-- 01 -->
+  <section id="intro">
+    <h2><span class="num">1</span><span class="serif">這是什麼</span></h2>
+    <p class="lede">一分鐘認識這套工具</p>
+    <div class="card">
+      <p>「社團帳本」是一套安裝在自己電腦上使用的記帳程式，專為社團、系學會、球隊等
+      需要管理公款的團體設計。所有資料都存在<b>自己的電腦裡</b>，不需要連網也能記帳、
+      看報表，交接給下一屆也只要把一個備份檔交出去即可。</p>
+      <div class="grid">
+        <div class="tile"><div class="ic">💰</div><h4>收支記帳</h4><p>一筆一筆記錄收入與支出，自動結算結餘</p></div>
+        <div class="tile"><div class="ic">📊</div><h4>報表與預算</h4><p>依專案/活動、部門自動彙總，掌握花費狀況</p></div>
+        <div class="tile"><div class="ic">👥</div><h4>多人共用</h4><p>可建立多組帳號，依角色開放不同的操作權限</p></div>
+        <div class="tile"><div class="ic">🗂️</div><h4>交接方便</h4><p>一鍵匯出備份檔，下一屆接手不必重新輸入資料</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section id="install">
+    <h2><span class="num">2</span><span class="serif">安裝與開啟程式</span></h2>
+    <p class="lede">不需要安裝精靈，拿到程式就能用</p>
+
+    <ol class="steps">
+      <li><b>取得程式檔案</b>：通常會拿到一個檔名類似 <code>ClubLedger.exe</code> 的執行檔（也可能連同一份出版圖示檔或說明文件一起收到）。把它放到一個你自己好記得的資料夾即可，例如「文件 / 社團帳本」，不需要特別安裝到某個系統資料夾。</li>
+      <li><b>直接雙擊開啟</b>：第一次執行會開出一個新視窗，就是整個程式的畫面。</li>
+      <li><b>如果 Windows 跳出「您的電腦受到保護」的藍色警告視窗</b>：這是 Windows SmartScreen 的提醒，因為這個程式沒有購買昂貴的商用簽章憑證，不代表檔案有問題。點一下視窗裡的<b>「其他資訊」</b>，再點<b>「仍要執行」</b>即可正常開啟。</li>
+      <li><b>如果防毒軟體跳出警示或直接刪除/隔離了這個檔案</b>：這也是常見的「未知發行者」誤判，不是真的中毒。可以到防毒軟體的「隔離區/威脅記錄」把檔案還原，或在防毒設定裡把這個檔案加入白名單/排除清單後再重新開啟一次。</li>
+    </ol>
+
+    <div class="tip">
+      <div class="icon">💡</div>
+      <div><b>可以放心把 EXE 搬到別的資料夾或改檔名</b>
+      你記錄的帳本資料並不是存在這個 EXE 檔案裡，而是另外存在 Windows 自己的使用者資料夾裡，所以就算你把 EXE 搬家、改名字、甚至重新下載一份新的 EXE 蓋過去，裡面已經記錄的帳本資料都不會不見。</div>
+    </div>
+
+    <div class="warn">
+      <div class="icon">⚠️</div>
+      <div><b>電腦上需要有 Microsoft Edge WebView2 元件</b>
+      這是 Windows 10/11 用來顯示程式畫面的內建元件，一般電腦都已經有了。如果雙擊 EXE 後完全沒有反應，或只開出一個空白視窗，代表這台電腦缺少這個元件，請搜尋「WebView2 Runtime 下載」安裝（微軟官方免費提供），安裝完再重新開啟一次程式即可。</div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section id="first-run">
+    <h2><span class="num">3</span><span class="serif">第一次使用</span></h2>
+    <p class="lede">建立你的第一本帳本</p>
+
+    <div class="mockup">
+      <div class="mock-label">示意畫面・選擇帳本</div>
+      <div class="mock-login">
+        <div class="circle">帳</div>
+        <div style="font-weight:700;">選擇帳本</div>
+        <div style="font-size:12px;color:var(--ink-soft);margin:4px 0 10px;">一台電腦可以管理多個社團的帳本</div>
+        <div class="field"></div>
+        <div class="btn">＋ 新增帳本並進入</div>
+      </div>
+    </div>
+
+    <ol class="steps">
+      <li>第一次開啟時會看到「選擇帳本」畫面（目前還沒有任何帳本），在欄位輸入帳本名稱（例如「吉他社」），按下<b>「＋ 新增帳本並進入」</b>。</li>
+      <li>接著會進入「建立社團帳本」設定精靈，填寫：社團名稱、喜歡的主題顏色、管理員姓名、<b>登入帳號</b>（之後登入要用，建議英數字，自己容易記得）、<b>密碼</b>（至少4碼）。</li>
+      <li>「帳本啟用信箱」欄位為選填，如果你的社團是由某位系統管理者/發行者統一管理多個社團，請依對方指示填寫這個欄位；如果不確定，先留空，之後仍可以在「系統設定」補填。</li>
+      <li>按下「建立帳本」，就會直接用剛剛設定的管理員帳號登入，進入主畫面。</li>
+    </ol>
+
+    <div class="lock">
+      <div class="icon">🔒</div>
+      <div><b>密碼請自己保管好</b>
+      密碼只會存在這台電腦本機裡，沒有「忘記密碼用信箱找回」這種雲端機制。請見本手冊「常見問題」裡「忘記密碼怎麼辦」一節，並養成習慣：至少設定兩組管理員帳號，互相備援。</div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="tour">
+    <h2><span class="num">4</span><span class="serif">介面導覽</span></h2>
+    <p class="lede">登入後，畫面上方會有這幾個頁籤</p>
+
+    <div class="mockup">
+      <div class="mock-label">示意畫面・主選單頁籤</div>
+      <div class="mock-tabs">
+        <span class="active">儀表板</span><span>記帳</span><span>管理中心</span><span>報表</span><span>預算</span><span>系統設定</span>
+      </div>
+      <div class="mock-rows">
+        <div class="mock-row"><span>10/01　社費收入</span><span class="amt-in">＋2,000</span></div>
+        <div class="mock-row"><span>10/03　文具採購</span><span class="amt-out">－560</span></div>
+        <div class="mock-row"><span>10/05　場地租借</span><span class="amt-out">－1,200</span></div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>頁籤</th><th>用途</th></tr>
+      <tr><td>📋 儀表板</td><td>一打開就看得到的總覽：目前結餘、近期收支、提醒事項</td></tr>
+      <tr><td>✏️ 記帳</td><td>新增/編輯每一筆收入或支出，批次核銷請款、匯出CSV、列印</td></tr>
+      <tr><td>🗂️ 管理中心</td><td>維護「專案/活動」「部門/組別」「帳目分類」「經手人」等基礎資料</td></tr>
+      <tr><td>📊 報表</td><td>依時間、專案、部門彙總檢視收支狀況</td></tr>
+      <tr><td>🎯 預算</td><td>設定各部門/專案的預算金額，追蹤執行進度</td></tr>
+      <tr><td>⚙️ 系統設定</td><td>社團資訊、學期管理、簽章/社團章、帳號與權限、備份還原</td></tr>
+    </table>
+
+    <div class="tip">
+      <div class="icon">💡</div>
+      <div><b>看不到某些頁籤或按鈕是正常的</b>
+      畫面會依你登入的帳號角色（管理員／會計／一般成員）顯示不同的操作權限，例如只有管理員能進「帳號與權限」子頁新增/刪除別人的登入帳號；如果有需要卻看不到某項功能，請洽管理員確認權限設定。</div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section id="daily">
+    <h2><span class="num">5</span><span class="serif">日常操作</span></h2>
+    <p class="lede">最常用到的幾件事</p>
+
+    <h3>📝 新增一筆收支</h3>
+    <ol class="steps">
+      <li>點「記帳」頁籤 →「＋ 新增一筆」。</li>
+      <li>填入日期、類型（收入／支出）、金額、分類、對應的專案或部門（若有）、經手人、備註等。</li>
+      <li>存檔後會立即反映在儀表板與報表的加總裡。</li>
+    </ol>
+
+    <h3>🧾 批次核銷／請款</h3>
+    <p>如果有多筆代墊款項需要一次請款結算，可在記帳列表勾選多筆項目後，使用批次結算功能一次處理，不用一筆一筆手動改狀態。</p>
+
+    <h3>🗂️ 建立專案/活動、部門、分類、經手人</h3>
+    <p>到「管理中心」頁籤分別維護：</p>
+    <ul>
+      <li><b>專案/活動</b>：例如「迎新茶會」「期末成果展」，可依學期分別建立，方便單獨看這個活動的收支與結餘。</li>
+      <li><b>部門/組別</b>：例如「公關組」「器材組」，可設定各自的預算額度。</li>
+      <li><b>帳目分類</b>：例如「交通費」「餐飲費」「場地費」，全社團共用同一份清單。</li>
+      <li><b>經手人</b>：實際經手金錢的人（代墊、收款），只是一個名字標記，不需要是系統登入帳號。</li>
+    </ul>
+
+    <h3>📤 匯出 CSV / 列印報表</h3>
+    <p>記帳列表與報表頁都提供匯出 CSV（可用 Excel 開啟）與直接列印的功能，方便製作成冊存查或提交給社團指導老師、系學會審核。</p>
+
+    <h3>🖋️ 上傳簽章與社團章</h3>
+    <p>在「系統設定 → 簽章與社團章」可以上傳經手人簽名或社團大小章的圖檔，之後列印報表時能自動蓋在對應位置，不用印出來再手動蓋章簽名。</p>
+
+    <h3>🗓️ 學期管理</h3>
+    <p>可以建立多個學期（例如「113學年度上學期」），切換「檢視學期」後，專案/活動、部門預算等畫面只會顯示該學期範圍的資料，方便每學期各自結算、互不混淆。</p>
+  </section>
+
+  <!-- 06 -->
+  <section id="accounts">
+    <h2><span class="num">6</span><span class="serif">帳號與權限（管理員操作）</span></h2>
+    <p class="lede">在「系統設定 → 帳號與權限」子頁進行，僅管理員角色可見</p>
+
+    <table>
+      <tr><th>角色</th><th>可以做什麼</th></tr>
+      <tr><td>管理員</td><td>所有功能皆可操作，包含新增/刪除帳號、重設密碼、修改角色</td></tr>
+      <tr><td>會計</td><td>可處理日常記帳、報表、預算、系統設定中的一般設定，但無法新增/刪除他人帳號</td></tr>
+      <tr><td>一般成員</td><td>依管理員指派的頁籤權限使用，通常用於唯讀查詢或單純記帳</td></tr>
+    </table>
+
+    <h3>👤 新增一位成員</h3>
+    <ol class="steps">
+      <li>系統設定 → 帳號與權限 →「＋ 新增帳號」。</li>
+      <li>填寫姓名、登入帳號、初始密碼、角色，以及要開放的頁籤。</li>
+      <li>把登入帳號與初始密碼告訴對方，請對方自行登入後盡快更改成只有自己知道的密碼。</li>
+    </ol>
+
+    <h3>🔑 幫別人重設密碼</h3>
+    <p>某位成員忘記密碼時，管理員可以到「帳號與權限」找到該帳號，執行重設密碼，系統會產生一組臨時密碼，請把這組臨時密碼告訴對方；對方用這組臨時密碼登入後，會被要求立刻設定一組新密碼才能繼續使用，管理員不需要也不會知道對方最後設定的新密碼。</p>
+  </section>
+
+  <!-- 07 -->
+  <section id="backup">
+    <h2><span class="num">7</span><span class="serif">備份與還原</span></h2>
+    <p class="lede">這是整本手冊裡最重要的一節，請務必養成習慣</p>
+
+    <div class="warn">
+      <div class="icon">⚠️</div>
+      <div><b>所有資料只存在這台電腦裡，沒有雲端備份</b>
+      電腦故障、重灌、檔案誤刪都可能造成資料遺失，<b>定期手動備份是唯一的保險</b>，強烈建議每次記完一批帳，或每週/每次重大異動後，養成隨手備份一次的習慣。</div>
+    </div>
+
+    <h3>📥 匯出備份檔</h3>
+    <ol class="steps">
+      <li>系統設定 →「備份與還原」→「匯出備份檔」。</li>
+      <li>跳出存檔視窗後，選擇要存放的位置（建議另外存一份到隨身碟、雲端硬碟或 email 給自己），檔名預設會包含帳本名稱。</li>
+      <li>產生的是一個 <code>.json</code> 檔，請完整保留這個檔案，不要用文字編輯器手動修改內容。</li>
+    </ol>
+
+    <h3>📤 還原備份檔</h3>
+    <ol class="steps">
+      <li>系統設定 →「備份與還原」→「匯入備份檔」。</li>
+      <li>選擇「合併」或「完全取代」：
+        <ul style="margin-top:6px;">
+          <li><b>合併</b>：保留目前帳本既有的資料，備份檔裡的內容會疊加/覆蓋同名項目，適合「補回遺漏的一部分資料」。</li>
+          <li><b>完全取代</b>：會先清空目前帳本的「所有」資料，再換成備份檔內容，適合「整本帳本換成另一個時間點的狀態」或「交接給新接手的人」，<b>此操作無法復原，請務必先確認檔案沒選錯</b>。</li>
+        </ul>
+      </li>
+      <li>選擇備份檔並確認後，畫面會顯示已還原的資料筆數，並自動重新整理，之後請用備份檔裡原本的帳號密碼登入。</li>
+    </ol>
+
+    <div class="tip">
+      <div class="icon">💡</div>
+      <div><b>建議的備份習慣</b>
+      <ul style="margin:6px 0 0;">
+        <li>每次完成一批記帳作業後，順手匯出一次</li>
+        <li>每學期結束、交接前，務必匯出一份並妥善保存</li>
+        <li>要測試「完全取代」或還不熟悉的功能前，先匯出一份當下的備份，有狀況隨時能還原</li>
+      </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section id="multi">
+    <h2><span class="num">8</span><span class="serif">多帳本管理</span></h2>
+    <p class="lede">一台電腦可以同時管理好幾個社團</p>
+    <p>如果你同時要經手不只一個社團的帳目，不需要安裝多次程式。開啟程式時的「選擇帳本」畫面可以：</p>
+    <ul>
+      <li><b>新增帳本</b>：建立另一本完全獨立的帳本，彼此資料不互通。</li>
+      <li><b>設為預設</b>：設定後，下次開啟程式會直接跳過選擇畫面，進入該帳本的登入頁；要切換回其他帳本，可在程式內「系統設定」或畫面角落的切換帳本功能回到選擇畫面。</li>
+      <li><b>刪除帳本</b>：會永久刪除該帳本所有資料，此操作無法復原，刪除前請先確認已匯出備份。</li>
+    </ul>
+  </section>
+
+  <!-- 09 -->
+  <section id="migrate">
+    <h2><span class="num">9</span><span class="serif">換電腦 / 交接給下一位</span></h2>
+    <p class="lede">畢業季、交接典禮前最實用的一節</p>
+
+    <ol class="steps">
+      <li>在舊電腦／卸任前，到「系統設定 → 備份與還原」匯出一份最新的備份檔，連同程式 EXE 一起交給接手的人（例如用隨身碟拷貝，或雲端硬碟傳送）。</li>
+      <li>對方拿到 EXE 後，依本手冊「第一次使用」的步驟開啟程式、新增一本帳本，建立設定精靈時<b>先隨意填一組暫時的管理員帳號密碼</b>即可（這組暫時帳密之後會被備份檔內容整個取代）。</li>
+      <li>用這組暫時帳號登入後，到「系統設定 → 備份與還原 → 匯入備份檔」，選擇<b>「完全取代」</b>模式，選取你交給他的那份備份檔。</li>
+      <li>還原完成、畫面自動重新整理後，登入畫面就會變成原本帳本裡真實的帳號清單，請接手的人直接用你原本設定的帳號密碼登入即可，不需要重新設定密碼。</li>
+    </ol>
+
+    <div class="tip">
+      <div class="icon">💡</div>
+      <div><b>搬家前別忘了</b>：如果你的電腦上同時管理好幾個社團的帳本，請針對要交接的那一本個別匯出，其餘帳本不受影響。</div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section id="faq">
+    <h2><span class="num">10</span><span class="serif">常見問題 Q&amp;A</span></h2>
+
+    <h3>Q：雙擊程式沒有反應，或只跳出一個空白視窗？</h3>
+    <p>通常是這台電腦缺少 Microsoft Edge WebView2 元件，請搜尋「WebView2 Runtime 下載」安裝後再試一次（見第2節「安裝與開啟程式」）。</p>
+
+    <h3>Q：忘記自己的登入密碼怎麼辦？</h3>
+    <p>請找同一本帳本裡<b>其他的管理員</b>，請對方到「系統設定 → 帳號與權限」幫你重設密碼（見第6節）。如果整本帳本<b>所有管理員帳號都忘記密碼</b>或已被誤刪，一般使用者無法自行解鎖，請聯繫原本協助建置這套系統的人員（系統管理者/發行者），由對方到這台電腦上協助處理救援；處理前建議先匯出目前能存取的任何備份資料。</p>
+
+    <h3>Q：開啟程式顯示「此帳本尚未啟用」或「試用期已結束」？</h3>
+    <p>代表這本帳本有設定遠端啟用管制、但尚未完成登記或已被標記為停用，請依畫面指示聯繫你的系統管理者/發行者確認啟用狀態，不需要自己動手修改任何設定，對方確認後重新整理畫面即可恢復使用。</p>
+
+    <h3>Q：操作到一半畫面突然要求重新輸入密碼？</h3>
+    <p>這是程式的自動鎖定保護機制：閒置超過10分鐘沒有任何操作，會自動回到登入畫面，重新輸入密碼即可繼續，資料不會遺失。</p>
+
+    <h3>Q：之前建立的帳本在「選擇帳本」畫面不見了？</h3>
+    <p>請確認是不是換了一台電腦、或重灌/清除了使用者資料（帳本資料存在電腦的使用者設定檔資料夾裡，不在程式本身的資料夾裡，見第9節「換電腦/交接」的說明）。如果只是想找回備份，請用先前匯出的備份檔、依「還原備份檔」步驟在新建立的帳本裡還原回來。</p>
+
+    <h3>Q：誤刪了一筆交易記錄，可以復原嗎？</h3>
+    <p>記帳資料的刪除目前沒有「資源回收桶」、無法單筆復原，如果有定期備份，可以用最近一次備份還原回來（但會連同備份之後新增的其他資料一起回到備份當時的狀態），這也是為什麼建議養成定期備份習慣的原因。</p>
+
+    <h3>Q：想要把資料印出來蓋章用，格式跑掉怎麼辦？</h3>
+    <p>請改用程式內建的「列印」功能（而不是把畫面截圖列印），已針對紙張邊界做過調整；如果印表機驅動程式另外加上了自己的頁首頁尾，可到印表機的列印設定裡關閉「頁首及頁尾」選項。</p>
+  </section>
+
+  <!-- 11 -->
+  <section id="notes">
+    <h2><span class="num">11</span><span class="serif">注意事項</span></h2>
+
+    <div class="grid">
+      <div class="tile"><div class="ic">🔁</div><h4>定期備份</h4><p>這是避免資料遺失唯一的保險，請務必養成習慣（見第7節）</p></div>
+      <div class="tile"><div class="ic">🔐</div><h4>密碼各自保管</h4><p>每人使用自己的帳號登入，不要共用同一組帳密，方便追蹤誰異動了什麼</p></div>
+      <div class="tile"><div class="ic">🚫</div><h4>不要手動改動資料檔</h4><p>不要用其他軟體直接開啟/編輯程式存放資料的檔案，可能導致資料損毀</p></div>
+      <div class="tile"><div class="ic">🧑‍🤝‍🧑</div><h4>角色分級使用</h4><p>依實際需要的操作範圍指派角色與頁籤權限，而不是每個人都開管理員</p></div>
+      <div class="tile"><div class="ic">💾</div><h4>完全取代要小心</h4><p>還原備份選「完全取代」會清空現有資料且無法復原，動手前再三確認檔案</p></div>
+      <div class="tile"><div class="ic">📬</div><h4>有問題找系統管理者</h4><p>遇到啟用狀態、功能權限等訊息，聯繫協助建置系統的人員處理最快</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>社團帳本 使用手冊・僅供操作參考，實際畫面與功能細節請以程式當下版本為準</p>
+  </footer>
+</div>
+
+<a class="top-link" href="#" title="回到頂端">↑</a>
+
+</body>
+</html>

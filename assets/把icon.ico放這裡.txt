@@ -1,0 +1,10 @@
+Put your icon.ico file in this folder, named exactly: icon.ico
+
+Full path should be:
+  club_ledger_app/assets/icon.ico
+
+build_protected.bat (and the plain pyinstaller --icon command in README.md)
+will automatically pick it up from here. If this file is missing, the build
+just uses the default PyInstaller icon instead - it will not fail.
+
+You can delete this .txt file once you've added your real icon.ico.
