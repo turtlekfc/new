@@ -22,9 +22,19 @@ jobs:
       - name: 原始碼混淆加密
         run: |
           pyarmor gen -O pyarmor_mac_dist main.py backend
+      - name: 生成打包參數
+        id: set_imports
+        run: |
+          IMPORTS="--hidden-import webview --hidden-import backend --hidden-import backend.api --hidden-import backend.db --hidden-import backend.ledger_manager --hidden-import sqlite3"
+          if [ -f requirements.txt ]; then
+              while IFS='=' read -r pkg _; do
+                  if [ ! -z "$pkg" ]; then IMPORTS="$IMPORTS --hidden-import$pkg"; fi
+              done < requirements.txt
+          fi
+          echo "imports=$IMPORTS" >> $GITHUB_ENV
       - name: 編譯 macOS 應用程式
         run: |
-          pyinstaller --noconfirm --windowed --paths "pyarmor_mac_dist" --paths "." --collect-all backend --collect-all pywebview --hidden-import "webview" --hidden-import "backend" --hidden-import "backend.api" --hidden-import "backend.db" --hidden-import "backend.ledger_manager" --add-data "frontend:frontend" --add-data "templates:templates" --name "MyApp_Mac" pyarmor_mac_dist/main.py
+          pyinstaller --noconfirm --windowed --paths "pyarmor_mac_dist" --paths "." --collect-all backend --collect-all pywebview ${{ env.imports }} --add-data "frontend:frontend" --add-data "templates:templates" --name "MyApp_Mac" pyarmor_mac_dist/main.py
           cd dist
           zip -r MyApp-macOS.zip MyApp_Mac.app
       - name: 上傳成品
