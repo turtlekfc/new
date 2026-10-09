@@ -5,28 +5,29 @@ on:
   workflow_dispatch:
 jobs:
   build-macos:
-    name: ¥´¥] macOS APP
+    name: æ‰“åŒ… macOS APP
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: ³]©w Python
+      - name: æª¢å‡ºåŸå§‹ç¢¼
+        uses: actions/checkout@v4
+      - name: è¨­å®š Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: ¦w¸Ë¬Û¨Ì®M¥ó
+      - name: å®‰è£ç›¸ä¾å¥—ä»¶
         run: |
           python -m pip install --upgrade pip
           pip install pyinstaller pyarmor pywebview
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: ­ì©l½X²V²c¥[±K
+      - name: åŸå§‹ç¢¼æ··æ·†åŠ å¯†
         run: |
           pyarmor gen -O pyarmor_mac_dist main.py backend
-      - name: ½sÄ¶ macOS À³¥Îµ{¦¡
+      - name: ç·¨è­¯ macOS æ‡‰ç”¨ç¨‹å¼
         run: |
-          pyinstaller --noconfirm --windowed --paths "pyarmor_mac_dist" --paths "." --collect-all backend --collect-all pywebview --hidden-import "webview" --hidden-import "backend" --hidden-import "backend.api" --hidden-import "backend.db" --hidden-import "backend.ledger_manager" --hidden-import "sqlite3" --add-data "frontend:frontend" --add-data "templates:templates" --name "MyApp_Mac" pyarmor_mac_dist/main.py
+          pyinstaller --noconfirm --windowed --paths "pyarmor_mac_dist" --paths "." --additional-hooks-dir "pyi_hooks" --collect-all backend --collect-all pywebview --hidden-import "sqlite3" --hidden-import "_sqlite3" --hidden-import "webview" --hidden-import "backend" --hidden-import "backend.api" --hidden-import "backend.db" --hidden-import "backend.ledger_manager" --add-data "frontend:frontend" --add-data "templates:templates" --name "MyApp_Mac" pyarmor_mac_dist/main.py
           cd dist
           zip -r MyApp-macOS.zip MyApp_Mac.app
-      - name: ¤W¶Ç¦¨«~
+      - name: ä¸Šå‚³æˆå“
         uses: actions/upload-artifact@v4
         with:
           name: macOS-APP
