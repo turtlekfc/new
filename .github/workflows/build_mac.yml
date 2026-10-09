@@ -17,14 +17,14 @@ jobs:
       - name: 安裝相依套件
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller pyarmor
+          pip install pyinstaller pyarmor pywebview
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: 原始碼混淆加密
         run: |
-          pyarmor gen -O pyarmor_mac_dist main.py
+          pyarmor gen -O pyarmor_mac_dist main.py backend
       - name: 編譯 macOS 應用程式
         run: |
-          pyinstaller --noconfirm --windowed --name "MyApp_Mac" pyarmor_mac_dist/main.py
+          pyinstaller --noconfirm --windowed --paths "pyarmor_mac_dist" --paths "." --collect-submodules "backend" --hidden-import "webview" --hidden-import "backend" --collect-all pywebview --add-data "frontend:frontend" --add-data "templates:templates" --name "MyApp_Mac" pyarmor_mac_dist/main.py
           cd dist
           zip -r MyApp-macOS.zip MyApp_Mac.app
       - name: 上傳成品
